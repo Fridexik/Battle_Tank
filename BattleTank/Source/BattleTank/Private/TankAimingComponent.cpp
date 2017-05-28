@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleTank.h"
+#include "TankBarrel.h"
 #include "TankAimingComponent.h"
 
 
@@ -33,9 +34,52 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation) {
+void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed) {
 
-	auto OurTankName = GetOwner()->GetName();
-	UE_LOG(LogTemp, Warning, TEXT("%s Aiming At %s"), *OurTankName, *(HitLocation.ToString()));
+	if (!Barrel) { return; }
+	FVector OutLaunchVelocity;
+	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
+		//calculate
+
+	if (UGameplayStatics::SuggestProjectileVelocity(
+		this,
+		OutLaunchVelocity,
+		StartLocation,
+		HitLocation,
+		LaunchSpeed,
+		ESuggestProjVelocityTraceOption::DoNotTrace
+
+	)) 
+	{
+		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+
+
+		MoveBarrel(AimDirection);
+		//UE_LOG(LogTemp, Warning, TEXT("Aiming in direction %s"), *AimDirection.ToString());
+	}
+
+		
+
+
 }
 
+void  UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) 
+{
+	Barrel = BarrelToSet;
+	
+
+
+}
+
+void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
+
+	//Work-out difference between direction and rotation
+	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
+	auto AimAsRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimAsRotator - BarrelRotator;
+
+	
+
+	Barrel->Elevate(5);//TODO remove magic number
+
+}
