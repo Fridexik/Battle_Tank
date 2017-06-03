@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleTank.h"
+#include "Tank.h"
 #include "TankPlayerController2.h"
 
 
@@ -66,7 +67,7 @@ bool ATankPlayerController2::GetSightRayHitLocation(FVector& HitLocation) const
 	return true;
 }
 
-bool ATankPlayerController2::GetLookVectorHitLocation(FVector LookDirection,FVector& HitLocation ) const 
+bool ATankPlayerController2::GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const
 {
 	FHitResult HitResult;
 	auto StartLocation = PlayerCameraManager->GetCameraLocation();
@@ -76,14 +77,16 @@ bool ATankPlayerController2::GetLookVectorHitLocation(FVector LookDirection,FVec
 		StartLocation,
 		EndLocation,
 		ECollisionChannel::ECC_Visibility
-		
+
 
 	))
 	{
-		HitLocation=HitResult.Location;
-			return true;
+		HitLocation = HitResult.Location;
+		return true;
 	}
+	else {
 	HitLocation = FVector(0);
+}
 	return false;
 
 }

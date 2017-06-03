@@ -47,17 +47,23 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed) {
 		StartLocation,
 		HitLocation,
 		LaunchSpeed,
+		false,
+		0,
+		0,
 		ESuggestProjVelocityTraceOption::DoNotTrace
 
-	)) 
+	))
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 
 
 		MoveBarrel(AimDirection);
-		//UE_LOG(LogTemp, Warning, TEXT("Aiming in direction %s"), *AimDirection.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("Aiming in direction %s"), *AimDirection.Rotation().ToString());
 	}
-
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("no aim"));
+		MoveBarrel(FVector(0));
+	}
 		
 
 
@@ -80,6 +86,6 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
 
 	
 
-	Barrel->Elevate(5);//TODO remove magic number
+	Barrel->Elevate(DeltaRotator.Pitch);//TODO remove magic number
 
 }
