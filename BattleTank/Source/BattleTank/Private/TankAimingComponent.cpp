@@ -2,6 +2,7 @@
 
 #include "BattleTank.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 #include "TankAimingComponent.h"
 
 
@@ -58,6 +59,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed) {
 
 
 		MoveBarrel(AimDirection);
+		MoveTurret(AimDirection);
 		//UE_LOG(LogTemp, Warning, TEXT("Aiming in direction %s"), *AimDirection.Rotation().ToString());
 	}
 	else {
@@ -71,11 +73,18 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed) {
 
 void  UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) 
 {
+	if (!BarrelToSet) { return; }
 	Barrel = BarrelToSet;
 	
+}
 
+void  UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
+{
+	if (!TurretToSet) { return; }
+	Turret = TurretToSet;
 
 }
+
 
 void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
 
@@ -86,6 +95,16 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
 
 	
 
-	Barrel->Elevate(DeltaRotator.Pitch);//TODO remove magic number
+	Barrel->Elevate(DeltaRotator.Pitch);
+	
+}
 
+void UTankAimingComponent::MoveTurret(FVector AimDirection) {
+
+	//Work-out difference between direction and rotation
+	auto TurretRotator = Turret->GetForwardVector().Rotation();
+	auto AimAsRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimAsRotator - TurretRotator;
+	//UE_LOG(LogTemp, Warning, TEXT("test %s"), *DeltaRotator.ToString());
+	Turret->Elevate(DeltaRotator.Yaw);
 }
