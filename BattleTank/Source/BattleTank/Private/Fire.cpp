@@ -33,6 +33,3 @@ void UFire::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 	// ...
 }
 
-void UFire::FireTo(){
-	UE_LOG(LogTemp, Warning, TEXT("Fire"));
-}

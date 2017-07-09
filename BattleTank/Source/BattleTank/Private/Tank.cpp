@@ -2,8 +2,11 @@
 
 #include "BattleTank.h"
 #include "TankAimingComponent.h"
+#include "TankBarrel.h"
+#include "Projectile.h"
 #include "Fire.h"
 #include "Tank.h"
+
 
 
 // Sets default values
@@ -13,7 +16,7 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
-	TankFiringComponent = CreateDefaultSubobject<UFire>(FName("Fire"));
+	//TankFiringComponent = CreateDefaultSubobject<UFire>(FName("Fire"));
 
 }
 
@@ -36,6 +39,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ATank::SetBarrelReference(UTankBarrel* BarrelToSet) 
 {
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
+	Barrel = BarrelToSet;
 }
 
 void ATank::SetTurretReference(UTankTurret* TurretToSet)
@@ -50,5 +54,11 @@ void ATank::AimAt(FVector HitLocation)
 
 void ATank::FireAt()
 {
-	TankFiringComponent->FireTo();
+	UE_LOG(LogTemp, Warning, TEXT("Fire"));
+	if (!Barrel) { return; }
+
+	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
+	FRotator StartRotation = Barrel->GetSocketRotation(FName("Projectile"));
+
+	GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, StartLocation, StartRotation);
 }

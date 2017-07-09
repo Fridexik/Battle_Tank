@@ -10,7 +10,8 @@
 class UTankAimingComponent; 
 class UTankBarrel; 
 class UTankTurret;
-class UFire;
+//class UFire;
+class AProjectile;
 
 
 UCLASS()
@@ -32,7 +33,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UTankAimingComponent* TankAimingComponent = nullptr;
-	UFire* TankFiringComponent = nullptr;
+	//UFire* TankFiringComponent = nullptr;
 
 public:	
 	
@@ -42,8 +43,16 @@ public:
 	void AimAt(FVector HitLocation);
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void FireAt();
+
+private:
 	
 	UPROPERTY(EditAnywhere, Category= Firing)
 	float LaunchSpeed = 100000;
+
+	UPROPERTY(EditAnywhere, Category = Setup)
+	TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	//Local barrel reference for spawning projectile
+	UTankBarrel* Barrel = nullptr;
 	
 };
