@@ -63,7 +63,6 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed) {
 		//UE_LOG(LogTemp, Warning, TEXT("Aiming in direction %s"), *AimDirection.Rotation().ToString());
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("no aim"));
 		MoveBarrel(FVector(0));
 	}
 		

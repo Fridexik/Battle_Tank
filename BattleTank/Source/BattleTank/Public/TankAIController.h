@@ -22,11 +22,6 @@ public:
 
 private:
 
-
-	ATank* GetControlledTank() const;
-
-	ATank* GetPlayerTank() const;
-
 	void AimToPlayer();
 
 

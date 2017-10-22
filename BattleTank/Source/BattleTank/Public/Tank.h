@@ -10,7 +10,7 @@
 class UTankAimingComponent; 
 class UTankBarrel; 
 class UTankTurret;
-//class UFire;
+class UTankMovementComponent;
 class AProjectile;
 
 
@@ -33,6 +33,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	UTankAimingComponent* TankAimingComponent = nullptr;
+	UPROPERTY(BlueprintReadOnly)
+	UTankMovementComponent* TankMovementComponent = nullptr;
 	//UFire* TankFiringComponent = nullptr;
 
 public:	
@@ -54,5 +56,11 @@ private:
 
 	//Local barrel reference for spawning projectile
 	UTankBarrel* Barrel = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+	float ReloadTimeInSecond = 3;
+
+	double LastFireTime = 0;
+
 	
 };

@@ -3,6 +3,7 @@
 #include "BattleTank.h"
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
+#include "TankMovementComponent.h"
 #include "Projectile.h"
 #include "Fire.h"
 #include "Tank.h"
@@ -16,6 +17,7 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
+	TankMovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("Movement Component"));
 	//TankFiringComponent = CreateDefaultSubobject<UFire>(FName("Fire"));
 
 }
@@ -54,11 +56,14 @@ void ATank::AimAt(FVector HitLocation)
 
 void ATank::FireAt()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Fire"));
-	if (!Barrel) { return; }
+	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSecond;
+	if (Barrel && isReloaded)
+	{
+		FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
+		FRotator StartRotation = Barrel->GetSocketRotation(FName("Projectile"));
 
-	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
-	FRotator StartRotation = Barrel->GetSocketRotation(FName("Projectile"));
-
-	GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, StartLocation, StartRotation);
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, StartLocation, StartRotation);
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }
